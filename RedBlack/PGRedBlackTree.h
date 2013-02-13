@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface PGRedBlackTree : NSObject
-
-@property(readonly, assign) NSUInteger count;
+@interface PGRedBlackTree : NSObject {
+    NSUInteger _count;
+}
 
 + (PGRedBlackTree *)treeWithSelector:(SEL)comparator;
 + (PGRedBlackTree *)treeWithComparator:(NSComparator)comparator;
@@ -18,19 +18,21 @@
 - (id)initWithSelector:(SEL)comparator;
 - (id)initWithComparator:(NSComparator)comparator;
 
+- (NSUInteger)count;
+
 - (void)addObject:(id <NSCopying>)object;
 
 - (BOOL)containsObject:(id)object;
 - (id)member:(id)object;
 
-- (void)enumerateObjectsUsingBlock:(void (^)(id object, BOOL *stop))block;
-- (void)enumerateObjectsLessThanObject:(id)object usingBlock:(void (^)(id, BOOL *))block;
-- (void)enumerateObjectsLessThanOrEqualToObject:(id)object usingBlock:(void (^)(id, BOOL *))block;
-- (void)enumerateObjectsEqualToObject:(id)object usingBlock:(void (^)(id, BOOL *))block;
-- (void)enumerateObjectsGreaterThanOrEqualToObject:(id)object usingBlock:(void (^)(id, BOOL *))block;
-- (void)enumerateObjectsGreaterThanObject:(id)object usingBlock:(void (^)(id, BOOL *))block;
+- (void)enumerateObjectsUsingBlock:(void (^)(id obj, BOOL *stop))block;
+- (void)enumerateObjectsLessThanObject:(id)object usingBlock:(void (^)(id obj, BOOL *stop))block;
+- (void)enumerateObjectsLessThanOrEqualToObject:(id)object usingBlock:(void (^)(id obj, BOOL *stop))block;
+- (void)enumerateObjectsEqualToObject:(id)object usingBlock:(void (^)(id obj, BOOL *stop))block;
+- (void)enumerateObjectsGreaterThanOrEqualToObject:(id)object usingBlock:(void (^)(id obj, BOOL *stop))block;
+- (void)enumerateObjectsGreaterThanObject:(id)object usingBlock:(void (^)(id obj, BOOL *stop))block;
 
-- (NSArray *)objectsPassingTest:(BOOL (^)(id object, BOOL *stop))predicate;
+- (NSArray *)objectsPassingTest:(BOOL (^)(id obj, BOOL *stop))predicate;
 
 - (id)firstObject;
 - (id)lastObject;

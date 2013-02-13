@@ -12,43 +12,44 @@
 int main(int argc, const char * argv[])
 {
     @autoreleasepool {
-        PGRedBlackTree *tree = [[PGRedBlackTree alloc] initWithSelector:@selector(compare:)];
-        for (NSUInteger i = 1; i <= 5; ++i) {
+        // Add objects
+        NSDate *date = [NSDate date];
+        PGRedBlackTree *tree = [PGRedBlackTree treeWithSelector:@selector(compare:)];
+        for (NSUInteger i = 1000; i != 0 ; --i) {
             for (NSUInteger j = 0; j < 5; ++j) {
                 [tree addObject:@(i + 0.2 * j)];
             }
         }
+        
+        printf("Built a tree with %lu items; time: %fs\n", [tree count], -[date timeIntervalSinceNow]);
 
-//        for (NSUInteger i = 10000; i > 0; --i) {
-//            [tree containsObject:@(i)];
-//        }
-        
-//        NSLog(@"%lu", [tree count]);
-//
-//        NSLog(@"Contains 3? %d", [tree containsObject:@3]);
-//        NSLog(@"Contains 37? %d", [tree containsObject:@37]);
-//        NSLog(@"%@", [tree allObjects]);
-        
-//        NSArray *evenStrings = [tree objectsPassingTest:^BOOL(id object, BOOL *stop) {
-//            return [object unsignedIntegerValue] % 2 == 1;
-//        }];
-//
-//        NSLog(@"%@", evenStrings);
-        
-//        [tree enumerateObjectsUsingBlock:^(id object, BOOL *stop) {
-//            NSLog(@"%@", object);
-//            *stop = [object intValue] % 3 == 0;
-//        }];
+        date = [NSDate date];
+        printf("[tree contains:@3] == %d, time: %fs\n", [tree containsObject:@10321.2], -[date timeIntervalSinceNow]);
 
+        printf("[tree contains:@37.1] == %d, time: %fs\n", [tree containsObject:@99239.1], -[date timeIntervalSinceNow]);
 
-        for (id object in [tree objectsGreaterThanObject:@3.6]) {
-            NSLog(@"%@", object);
-        }
+        printf("First object: %s\n", [[[tree firstObject] description] UTF8String]);
+        printf("Last object: %s\n", [[[tree lastObject] description] UTF8String]);
         
-//        NSLog(@"%@", [tree firstObject]);
-//        NSLog(@"%@", [tree lastObject]);
-//        
-//        NSLog(@"%@", [tree debugDescription]);
+        // Looping tests
+        date = [NSDate date];
+        __block NSUInteger i = 0;
+        [tree enumerateObjectsUsingBlock:^(id object, BOOL *stop) {
+            NSComparisonResult result = [object compare:@50000];
+            if (result > NSOrderedSame) {
+                i += [object unsignedIntegerValue];
+            }
+        }];
+        
+        printf("Naive greater than loop resulted in i = %lu, time: %fs\n", i, -[date timeIntervalSinceNow]);
+        
+        date = [NSDate date];
+        i = 0;
+        [tree enumerateObjectsGreaterThanObject:@50000 usingBlock:^(id object, BOOL *stop) {
+            i += [object unsignedIntegerValue];
+        }];
+
+        printf("-enumerateObjectsGreaterThanObject: resulted in i = %lu, time: %fs\n\n", i, -[date timeIntervalSinceNow]);
     }
     
     return 0;
