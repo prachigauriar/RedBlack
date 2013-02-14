@@ -17,7 +17,8 @@
 @property(readwrite, copy) NSComparator comparator;
 
 - (PGRedBlackTreeNode *)insertNodeWithObject:(id)object;
-- (void)fixUpTreeInvariantsAfterInsertingNode:(PGRedBlackTreeNode *)node;
+- (void)fixInvariantsAfterInsertionWithNode:(PGRedBlackTreeNode *)node;
+- (void)fixInvariantsAfterRemovalWithNode:(PGRedBlackTreeNode *)node;
 
 - (PGRedBlackTreeNode *)nodeForObject:(id)object;
 
@@ -90,7 +91,7 @@
     PGRedBlackTreeNode *node = [self insertNodeWithObject:object];
     [object release];
 
-    [self fixUpTreeInvariantsAfterInsertingNode:node];
+    [self fixInvariantsAfterInsertionWithNode:node];
     ++_count;
 }
     
@@ -109,7 +110,7 @@
     while (true) {
         if (_comparator(object, node->object) < NSOrderedSame) {
             // If node has no left child, we've found where to insert our node
-            if (!node->leftChild) {
+            if (PGRedBlackTreeNodeIsSentinel(node->leftChild)) {
                 PGRedBlackTreeNode *newNode = PGRedBlackTreeNodeCreate(node, object);
                 node->leftChild = newNode;
                 return newNode;
@@ -120,7 +121,7 @@
         }
         
         // If node has no right child, we've found where to insert our node
-        if (!node->rightChild) {
+        if (PGRedBlackTreeNodeIsSentinel(node->rightChild)) {
             PGRedBlackTreeNode *newNode = PGRedBlackTreeNodeCreate(node, object);
             node->rightChild = newNode;
             return newNode;
@@ -131,7 +132,7 @@
 }
 
 
-- (void)fixUpTreeInvariantsAfterInsertingNode:(PGRedBlackTreeNode *)node
+- (void)fixInvariantsAfterInsertionWithNode:(PGRedBlackTreeNode *)node
 {
     while (true) {
         if (!node->parent) {
@@ -193,16 +194,16 @@
 - (id)member:(id)object
 {
     PGRedBlackTreeNode *node = [self nodeForObject:object];
-    return node ? [[node->object retain] autorelease] : nil;
+    return node ? PGRedBlackTreeNodeGetObject(node) : nil;
 }
 
 
 - (PGRedBlackTreeNode *)nodeForObject:(id)object
 {
-    if (!object) return NULL;
+    if (!object || !_root) return NULL;
     
     PGRedBlackTreeNode *node = _root;
-    while (node) {
+    while (!PGRedBlackTreeNodeIsSentinel(node)) {
         NSComparisonResult comparisonResult = self.comparator(object, node->object);
         
         if (comparisonResult < NSOrderedSame) {
@@ -222,16 +223,91 @@
 }
 
 
+#pragma mark - Removal
+
+- (void)removeObject:(id)object
+{
+    PGRedBlackTreeNode *node = [self nodeForObject:object];
+    if (!node) return;
+    
+    // The node we're removing has no children, so we can just update its parent's pointer and free it. We don't
+    // have to worry about its color, because there are no paths that go through it anymore, so we can't change
+    // the number of black nodes on a simple path from the root to its leaves
+    if (!node->leftChild && !node->rightChild) {
+        PGRedBlackTreeNodeFreeAndUpdateParent(node);
+        return;
+    }
+
+    // The node we're removing has two children, so we can replace its value with its predecessor's or successor's
+    // and free that node. No colors have changed, so we don't have any more work to do
+    if (node->leftChild && node->rightChild) {
+        PGRedBlackTreeNode *replacement = PGRedBlackTreeNodeIsLeftChild(node) ? PGRedBlackTreeNodeSuccessor(node) : PGRedBlackTreeNodePredecessor(node);
+        PGRedBlackTreeNodeSetObject(node, replacement->object);
+        PGRedBlackTreeNodeFreeAndUpdateParent(replacement);
+        return;
+    }
+
+    // The node we're removing has one child, so we need to replace it with that child. Start by getting the child
+    // and invalidating node's pointer to it. That's so that we can call PGRedBlackTreeNodeFree(node) without recursively
+    // freeing the child
+    PGRedBlackTreeNode *child = NULL;
+    if (node->leftChild) {
+        child = node->leftChild;
+        node->leftChild = NULL;
+    } else {
+        child = node->rightChild;
+        node->rightChild = NULL;
+    }
+
+    // If the node has a parent, make it point to child instead of node
+    if (node->parent) {
+        if (PGRedBlackTreeNodeIsLeftChild(node)) {
+            node->parent->leftChild = child;
+        } else {
+            node->parent->rightChild = child;
+        }
+    }
+
+    // Once we know if node is red or not, we can free it
+    BOOL isNodeRed = node->isRed;
+    PGRedBlackTreeNodeFree(node);
+
+    // If node was red, child must be black (all red nodes have black children). Replacing node with child doesn't
+    // change the number of black nodes between the root and its leaves, so we're done
+    if (isNodeRed) return;
+
+    // If node was black, but child is red, we can just make child black and be done with it
+    if (child->isRed) {
+        child->isRed = NO;
+        return;
+    }
+    
+    // Otherwise, node was black and child was black, which means we need to fix some invariants
+    [self fixInvariantsAfterRemovalWithNode:child];
+}
+
+
+- (void)fixInvariantsAfterRemovalWithNode:(PGRedBlackTreeNode *)node
+{
+    // Case 1 - If node is the root, we've removed a black node from every path, so we're done
+    if (!node->parent) return;
+    
+    
+}
+
+
 #pragma mark - Enumeration
 
 - (void)enumerateObjectsUsingBlock:(void (^)(id, BOOL *))block
 {
+    if (!_root) return;
     PGRedBlackTreeNodeTraverseSubnodesWithBlock(_root, block);
 }
 
 
 - (void)enumerateObjectsLessThanObject:(id)object usingBlock:(void (^)(id, BOOL *))block
 {
+    if (!_root) return;
     PGRedBlackTreeNodeTraverseSubnodesWithBlock(_root, ^(id obj, BOOL *stop) {
         NSComparisonResult result = _comparator(obj, object);
         if (result >= NSOrderedSame) {
@@ -246,6 +322,7 @@
 
 - (void)enumerateObjectsLessThanOrEqualToObject:(id)object usingBlock:(void (^)(id, BOOL *))block
 {
+    if (!_root) return;
     PGRedBlackTreeNodeTraverseSubnodesWithBlock(_root, ^(id obj, BOOL *stop) {
         if (_comparator(obj, object) > NSOrderedSame) {
             *stop = YES;
@@ -259,18 +336,21 @@
 
 - (void)enumerateObjectsEqualToObject:(id)object usingBlock:(void (^)(id, BOOL *))block
 {
+    if (!_root) return;
     PGRedBlackTreeNodeTraverseSubnodesEqualToObject(_root, object, _comparator, block);
 }
 
 
 - (void)enumerateObjectsGreaterThanOrEqualToObject:(id)object usingBlock:(void (^)(id, BOOL *))block
 {
+    if (!_root) return;
     PGRedBlackTreeNodeTraverseSubnodesGreaterThanOrEqualToObject(_root, object, _comparator, block);
 }
 
 
 - (void)enumerateObjectsGreaterThanObject:(id)object usingBlock:(void (^)(id, BOOL *))block
 {
+    if (!_root) return;
     PGRedBlackTreeNodeTraverseSubnodesGreaterThanObject(_root, object, _comparator, block);
 }
 
@@ -295,11 +375,11 @@
 {
     if (!_root) return nil;
     PGRedBlackTreeNode *node = _root;
-    while (node->leftChild) {
+    while (!PGRedBlackTreeNodeIsSentinel(node->leftChild)) {
         node = node->leftChild;
     }
     
-    return [[node->object retain] autorelease];
+    return PGRedBlackTreeNodeGetObject(node);
 }
 
 
@@ -307,11 +387,11 @@
 {
     if (!_root) return nil;
     PGRedBlackTreeNode *node = _root;
-    while (node->rightChild) {
+    while (!PGRedBlackTreeNodeIsSentinel(node->rightChild)) {
         node = node->rightChild;
     }
     
-    return [[node->object retain] autorelease];
+    return PGRedBlackTreeNodeGetObject(node);
 }
 
 

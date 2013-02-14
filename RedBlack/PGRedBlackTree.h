@@ -25,6 +25,8 @@
 - (BOOL)containsObject:(id)object;
 - (id)member:(id)object;
 
+- (void)removeObject:(id)object;
+
 - (void)enumerateObjectsUsingBlock:(void (^)(id obj, BOOL *stop))block;
 - (void)enumerateObjectsLessThanObject:(id)object usingBlock:(void (^)(id obj, BOOL *stop))block;
 - (void)enumerateObjectsLessThanOrEqualToObject:(id)object usingBlock:(void (^)(id obj, BOOL *stop))block;
@@ -32,19 +34,17 @@
 - (void)enumerateObjectsGreaterThanOrEqualToObject:(id)object usingBlock:(void (^)(id obj, BOOL *stop))block;
 - (void)enumerateObjectsGreaterThanObject:(id)object usingBlock:(void (^)(id obj, BOOL *stop))block;
 
-- (NSArray *)objectsPassingTest:(BOOL (^)(id obj, BOOL *stop))predicate;
-
 - (id)firstObject;
 - (id)lastObject;
 - (NSArray *)allObjects;
+
+- (NSArray *)objectsPassingTest:(BOOL (^)(id obj, BOOL *stop))predicate;
 
 - (NSArray *)objectsLessThanObject:(id)object;
 - (NSArray *)objectsLessThanOrEqualToObject:(id)object;
 - (NSArray *)objectsEqualToObject:(id)object;
 - (NSArray *)objectsGreaterThanOrEqualToObject:(id)object;
 - (NSArray *)objectsGreaterThanObject:(id)object;
-
-//- (void)removeObject:(id)object;
 
 @end
 
