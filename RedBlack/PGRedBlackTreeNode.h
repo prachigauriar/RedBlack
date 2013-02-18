@@ -9,9 +9,13 @@
 #ifndef PGREDBLACKTREENODE_H
 #define PGREDBLACKTREENODE_H
 
-#import <Foundation/Foundation.h>
+#import <Foundation/NSObjCRuntime.h>
+#import <Foundation/NSObject.h>
 
 @class PGRedBlackTree;
+
+
+#pragma mark - Types and constants
 
 typedef struct _PGRedBlackTreeNode PGRedBlackTreeNode;
 struct _PGRedBlackTreeNode {
@@ -24,22 +28,13 @@ struct _PGRedBlackTreeNode {
 
 extern PGRedBlackTreeNode const * const PGRedBlackTreeNodeSentinel;
 
+
+#pragma mark - Creation and Deletion
+
 extern PGRedBlackTreeNode *PGRedBlackTreeNodeCreate(PGRedBlackTreeNode *parent, id object);
-extern void PGRedBlackTreeNodeFree(PGRedBlackTreeNode *node);
-extern void PGRedBlackTreeNodeFreeAndUpdateParent(PGRedBlackTreeNode *node);
+extern void PGRedBlackTreeNodeFree(PGRedBlackTreeNode *self, BOOL freeChildren);
 
-extern NSString *PGRedBlackTreeNodeAppendDebugDescription(PGRedBlackTreeNode *node, NSMutableString *description, NSUInteger indentDepth);
-
-extern PGRedBlackTreeNode *PGRedBlackTreeNodePredecessor(PGRedBlackTreeNode *node);
-extern PGRedBlackTreeNode *PGRedBlackTreeNodeSuccessor(PGRedBlackTreeNode *node);
-
-extern void PGRedBlackTreeNodeRotateLeftInTree(PGRedBlackTreeNode *node, PGRedBlackTree *tree);
-extern void PGRedBlackTreeNodeRotateRightInTree(PGRedBlackTreeNode *node, PGRedBlackTree *tree);
-extern BOOL PGRedBlackTreeNodeTraverseSubnodesWithBlock(PGRedBlackTreeNode *node, void (^block)(id obj, BOOL *stop));
-extern BOOL PGRedBlackTreeNodeTraverseSubnodesEqualToObject(PGRedBlackTreeNode *node, id object, NSComparator cmp, void (^block)(id obj, BOOL *stop));
-extern BOOL PGRedBlackTreeNodeTraverseSubnodesGreaterThanOrEqualToObject(PGRedBlackTreeNode *node, id object, NSComparator cmp, void (^block)(id obj, BOOL *stop));
-extern BOOL PGRedBlackTreeNodeTraverseSubnodesGreaterThanObject(PGRedBlackTreeNode *node, id obj, NSComparator cmp, void (^block)(id, BOOL *));
-
+#pragma mark - Object accessors
 
 NS_INLINE id PGRedBlackTreeNodeGetObject(PGRedBlackTreeNode *node)
 {
@@ -55,6 +50,12 @@ NS_INLINE void PGRedBlackTreeNodeSetObject(PGRedBlackTreeNode *node, id object)
     }
 }
 
+#pragma mark - Descriptions
+
+extern NSString *PGRedBlackTreeNodeAppendDebugDescription(PGRedBlackTreeNode *node, NSMutableString *description, NSUInteger indentDepth);
+
+
+#pragma mark - Tests
 
 NS_INLINE BOOL PGRedBlackTreeNodeIsSentinel(PGRedBlackTreeNode *node)
 {
@@ -73,6 +74,8 @@ NS_INLINE BOOL PGRedBlackTreeNodeIsRightChild(PGRedBlackTreeNode *node)
     return node->parent && node == node->parent->rightChild;
 }
 
+
+#pragma mark - Relationships
 
 NS_INLINE PGRedBlackTreeNode *PGRedBlackTreeNodeGrandparent(PGRedBlackTreeNode *node)
 {
@@ -93,5 +96,32 @@ NS_INLINE PGRedBlackTreeNode *PGRedBlackTreeNodeSibling(PGRedBlackTreeNode *node
     if (!node->parent) return NULL;
     return PGRedBlackTreeNodeIsLeftChild(node) ? node->parent->rightChild : node->parent->leftChild;
 }
+
+extern PGRedBlackTreeNode *PGRedBlackTreeNodePredecessor(PGRedBlackTreeNode *node);
+extern PGRedBlackTreeNode *PGRedBlackTreeNodeSuccessor(PGRedBlackTreeNode *node);
+
+
+#pragma mark - Rotation
+
+extern void PGRedBlackTreeNodeRotateLeftInTree(PGRedBlackTreeNode *node, PGRedBlackTree *tree);
+extern void PGRedBlackTreeNodeRotateRightInTree(PGRedBlackTreeNode *node, PGRedBlackTree *tree);
+
+
+#pragma mark - Traversal
+
+extern BOOL PGRedBlackTreeNodeTraverseSubnodesWithBlock(PGRedBlackTreeNode *node,
+                                                        void (^block)(PGRedBlackTreeNode *n, BOOL *stop));
+extern BOOL PGRedBlackTreeNodeTraverseSubnodesEqualToObject(PGRedBlackTreeNode *node,
+                                                            id object, NSComparator cmp, void (^block)(PGRedBlackTreeNode *n, BOOL *stop));
+extern BOOL PGRedBlackTreeNodeTraverseSubnodesGreaterThanOrEqualToObject(PGRedBlackTreeNode *node, id object,
+                                                                         NSComparator cmp, void (^block)(PGRedBlackTreeNode *n, BOOL *stop));
+extern BOOL PGRedBlackTreeNodeTraverseSubnodesGreaterThanObject(PGRedBlackTreeNode *node, id obj, NSComparator cmp,
+                                                                void (^block)(PGRedBlackTreeNode *n, BOOL *stop));
+
+
+#pragma mark - Test helpers
+
+extern BOOL PGRedBlackTreeNodeFulfillsProperties(PGRedBlackTreeNode *node, NSUInteger blackNodesOnPathToRoot);
+extern NSUInteger PGRedBlackTreeNodeBlackNodeCountInPathFromNodeToRoot(PGRedBlackTreeNode *node);
 
 #endif

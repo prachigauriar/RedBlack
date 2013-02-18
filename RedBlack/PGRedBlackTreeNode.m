@@ -10,17 +10,25 @@
 #import "PGRedBlackTree.h"
 
 
+#pragma mark Private interfaces for PGRedBlackTree
+
 @interface PGRedBlackTree (PrivateAccessors)
 - (void)setRoot:(PGRedBlackTreeNode *)root;
 @end
 
 
+#pragma mark - Constants
+
 const PGRedBlackTreeNode _PGRedBlackTreeNodeSentinel = { NULL, NULL, NULL, NO, NULL };
 PGRedBlackTreeNode const * const PGRedBlackTreeNodeSentinel = &_PGRedBlackTreeNodeSentinel;
 
 
+#pragma mark - Creation and deletion
+
 PGRedBlackTreeNode *PGRedBlackTreeNodeCreate(PGRedBlackTreeNode *parent, id object)
 {
+    NSCAssert(!PGRedBlackTreeNodeIsSentinel(parent), @"parent is a sentinel");
+
     PGRedBlackTreeNode *self = calloc(1, sizeof(struct _PGRedBlackTreeNode));
     if (self) {
         self->parent = parent;
@@ -34,31 +42,22 @@ PGRedBlackTreeNode *PGRedBlackTreeNodeCreate(PGRedBlackTreeNode *parent, id obje
 }
 
 
-void PGRedBlackTreeNodeFree(PGRedBlackTreeNode *self)
+void PGRedBlackTreeNodeFree(PGRedBlackTreeNode *self, BOOL freeChildren)
 {
+    NSCAssert(self, @"self is NULL");
+    NSCAssert(!PGRedBlackTreeNodeIsSentinel(self), @"self is a sentinel");
+
     [self->object release];
-    if (!PGRedBlackTreeNodeIsSentinel(self->leftChild)) PGRedBlackTreeNodeFree(self->leftChild);
-
-    // All this saving the right child business is to enable tail recursion
-    PGRedBlackTreeNode *rightChild = self->rightChild;
-    free(self);
-    if (!PGRedBlackTreeNodeIsSentinel(rightChild)) PGRedBlackTreeNodeFree(rightChild);
-}
-
-
-void PGRedBlackTreeNodeFreeAndUpdateParent(PGRedBlackTreeNode *self)
-{
-    if (self->parent) {
-        if (PGRedBlackTreeNodeIsLeftChild(self)) {
-            self->parent->leftChild = (PGRedBlackTreeNode *)PGRedBlackTreeNodeSentinel;
-        } else {
-            self->parent->rightChild = (PGRedBlackTreeNode *)PGRedBlackTreeNodeSentinel;
-        }
+    if (freeChildren) {
+        if (!PGRedBlackTreeNodeIsSentinel(self->leftChild)) PGRedBlackTreeNodeFree(self->leftChild, YES);
+        PGRedBlackTreeNode *rightChild = self->rightChild;
+        free(self);
+        if (!PGRedBlackTreeNodeIsSentinel(rightChild)) PGRedBlackTreeNodeFree(rightChild, YES);
     }
-    
-    PGRedBlackTreeNodeFree(self);
 }
 
+
+#pragma mark - Descriptions
 
 static NSString *PGRedBlackTreeNodeIndentString(NSUInteger indentDepth)
 {
@@ -76,23 +75,26 @@ static NSString *PGRedBlackTreeNodeIndentString(NSUInteger indentDepth)
 
 NSString *PGRedBlackTreeNodeAppendDebugDescription(PGRedBlackTreeNode *self, NSMutableString *description, NSUInteger indentDepth)
 {
-    [description appendFormat:@"<node color=\"%@\">\n", self->isRed ? @"red" : @"black"];
+    NSCAssert(self, @"self is NULL");
+    NSCAssert(!PGRedBlackTreeNodeIsSentinel(self), @"self is a sentinel");
     
+    NSString *indentString = PGRedBlackTreeNodeIndentString(indentDepth);
     NSString *indentPlus1String = PGRedBlackTreeNodeIndentString(indentDepth + 1);
-    NSString *indentPlus2String = PGRedBlackTreeNodeIndentString(indentDepth + 2);
+    
+    [description appendString:indentString];
+    [description appendFormat:@"<node color=\"%@\">\n", self->isRed ? @"red" : @"black"];
 
     [description appendString:indentPlus1String];
-    [description appendString:@"<left>\n"];
 
-    [description appendString:indentPlus2String];
     if (!PGRedBlackTreeNodeIsSentinel(self->leftChild)) {
+        [description appendString:@"<left>\n"];
         PGRedBlackTreeNodeAppendDebugDescription(self->leftChild, description, indentDepth + 2);
+        [description appendString:indentPlus1String];
+        [description appendString:@"</left>\n"];
     } else {
-        [description appendString:@"<node color=\"black\" sentinel=\"true\" />\n"];
+        [description appendString:@"<left><node color=\"black\" sentinel=\"true\" /></left>\n"];
     }
 
-    [description appendString:indentPlus1String];
-    [description appendString:@"</left>\n"];
 
     [description appendString:indentPlus1String];
     [description appendString:@"<object>"];
@@ -100,30 +102,41 @@ NSString *PGRedBlackTreeNodeAppendDebugDescription(PGRedBlackTreeNode *self, NSM
     [description appendString:@"</object>\n"];
 
     [description appendString:indentPlus1String];
-    [description appendString:@"<right>\n"];
 
-    [description appendString:indentPlus2String];
     if (!PGRedBlackTreeNodeIsSentinel(self->rightChild)) {
+        [description appendString:@"<right>\n"];
         PGRedBlackTreeNodeAppendDebugDescription(self->rightChild, description, indentDepth + 2);
+        [description appendString:indentPlus1String];
+        [description appendString:@"</right>\n"];
     } else {
-        [description appendString:@"<node color=\"black\" sentinel=\"true\" />\n"];
+        [description appendString:@"<right><node color=\"black\" sentinel=\"true\" /></right>\n"];
     }
-
-    [description appendString:indentPlus1String];
-    [description appendString:@"</right>\n"];
     
-    [description appendString:PGRedBlackTreeNodeIndentString(indentDepth)];
+    [description appendString:indentString];
     [description appendString:@"</node>\n"];
     
     return description;
 }
 
 
-PGRedBlackTreeNode *PGRedBlackTreeNodePredecessor(PGRedBlackTreeNode *self)
+#pragma mark - Relationships
+
+PGRedBlackTreeNode *PGRedBlackTreeNodePredecessor(PGRedBlackTreeNode *node)
 {
-    if (PGRedBlackTreeNodeIsSentinel(self->leftChild)) return NULL;
+    NSCAssert(node, @"node is NULL");
+    if (!PGRedBlackTreeNodeIsSentinel(node)) return NULL;
     
-    PGRedBlackTreeNode *node = self->leftChild;
+    // If the node doesn't have a left child, keep going up and to the right
+    if (PGRedBlackTreeNodeIsSentinel(node->leftChild)) {
+        while (node->parent && PGRedBlackTreeNodeIsLeftChild(node)) {
+            node = node->parent;
+        }
+        
+        return node->parent;
+    }
+
+    // Otherwise, keep going down and to the right
+    node = node->leftChild;
     while (!PGRedBlackTreeNodeIsSentinel(node->rightChild)) {
         node = node->rightChild;
     }
@@ -132,12 +145,23 @@ PGRedBlackTreeNode *PGRedBlackTreeNodePredecessor(PGRedBlackTreeNode *self)
 }
 
 
-PGRedBlackTreeNode *PGRedBlackTreeNodeSuccessor(PGRedBlackTreeNode *self)
+PGRedBlackTreeNode *PGRedBlackTreeNodeSuccessor(PGRedBlackTreeNode *node)
 {
-    if (PGRedBlackTreeNodeIsSentinel(self->rightChild)) return NULL;
-    
-    PGRedBlackTreeNode *node = self->rightChild;
-    while (PGRedBlackTreeNodeIsSentinel(node->leftChild)) {
+    NSCAssert(node, @"node is NULL");
+    if (PGRedBlackTreeNodeIsSentinel(node)) return NULL;
+
+    // If the node doesn't have a right child, keep going up and to the left
+    if (PGRedBlackTreeNodeIsSentinel(node->rightChild)) {
+        while (node->parent && PGRedBlackTreeNodeIsRightChild(node)) {
+            node = node->parent;
+        }
+        
+        return node->parent;
+    }
+
+    // Otherwise, keep going down and to the left
+    node = node->rightChild;
+    while (!PGRedBlackTreeNodeIsSentinel(node->leftChild)) {
         node = node->leftChild;
     }
     
@@ -145,8 +169,13 @@ PGRedBlackTreeNode *PGRedBlackTreeNodeSuccessor(PGRedBlackTreeNode *self)
 }
 
 
+#pragma mark - Rotation
+
 void PGRedBlackTreeNodeRotateLeftInTree(PGRedBlackTreeNode *self, PGRedBlackTree *tree)
 {
+    NSCAssert(self, @"self is NULL");
+    NSCAssert(!PGRedBlackTreeNodeIsSentinel(self), @"self is a sentinel");
+
     // Other starts off as our right child. We will end up as its left child, and its left child will become our right one
     PGRedBlackTreeNode *other = self->rightChild;
 
@@ -181,6 +210,9 @@ void PGRedBlackTreeNodeRotateLeftInTree(PGRedBlackTreeNode *self, PGRedBlackTree
 
 void PGRedBlackTreeNodeRotateRightInTree(PGRedBlackTreeNode *self, PGRedBlackTree *tree)
 {
+    NSCAssert(self, @"self is NULL");
+    NSCAssert(!PGRedBlackTreeNodeIsSentinel(self), @"self is a sentinel");
+
     // Other starts off as our left child. We will end up as its right child, and its right child will become our left one
     PGRedBlackTreeNode *other = self->leftChild;
 
@@ -213,7 +245,9 @@ void PGRedBlackTreeNodeRotateRightInTree(PGRedBlackTreeNode *self, PGRedBlackTre
 }
 
 
-BOOL PGRedBlackTreeNodeTraverseSubnodesWithBlock(PGRedBlackTreeNode *self, void (^block)(id, BOOL *))
+#pragma mark - Traversal
+
+BOOL PGRedBlackTreeNodeTraverseSubnodesWithBlock(PGRedBlackTreeNode *self, void (^block)(PGRedBlackTreeNode *, BOOL *))
 {
     if (PGRedBlackTreeNodeIsSentinel(self)) return NO;
     
@@ -228,7 +262,7 @@ BOOL PGRedBlackTreeNodeTraverseSubnodesWithBlock(PGRedBlackTreeNode *self, void 
     // Keep traversing as long as we haven't backed up past the root of this subtree, i.e., self. This loop only goes up the tree.
     while (node && node != self->parent) {
         // Execute the block on the node's object. If the block told us to stop traversing, stop.
-        block(node->object, &stop);
+        block(node, &stop);
         if (stop) return YES;
 
         // If the current node has a right child, go right one and then go left as far as we can before continuing.
@@ -255,7 +289,8 @@ BOOL PGRedBlackTreeNodeTraverseSubnodesWithBlock(PGRedBlackTreeNode *self, void 
 }
 
 
-BOOL PGRedBlackTreeNodeTraverseSubnodesEqualToObject(PGRedBlackTreeNode *self, id object, NSComparator comparator, void (^block)(id, BOOL *))
+BOOL PGRedBlackTreeNodeTraverseSubnodesEqualToObject(PGRedBlackTreeNode *self, id object, NSComparator comparator,
+                                                     void (^block)(PGRedBlackTreeNode *, BOOL *))
 {
     if (PGRedBlackTreeNodeIsSentinel(self)) return NO;
     
@@ -274,7 +309,7 @@ BOOL PGRedBlackTreeNodeTraverseSubnodesEqualToObject(PGRedBlackTreeNode *self, i
             if (stop) return YES;
         }
 
-        block(self->object, &stop);
+        block(self, &stop);
         if (stop) return YES;
 
         return PGRedBlackTreeNodeTraverseSubnodesEqualToObject(self->rightChild, object, comparator, block);
@@ -285,7 +320,8 @@ BOOL PGRedBlackTreeNodeTraverseSubnodesEqualToObject(PGRedBlackTreeNode *self, i
 }
 
 
-BOOL PGRedBlackTreeNodeTraverseSubnodesGreaterThanOrEqualToObject(PGRedBlackTreeNode *self, id object, NSComparator comparator, void (^block)(id, BOOL *))
+BOOL PGRedBlackTreeNodeTraverseSubnodesGreaterThanOrEqualToObject(PGRedBlackTreeNode *self, id object, NSComparator comparator,
+                                                                  void (^block)(PGRedBlackTreeNode *, BOOL *))
 {
     if (PGRedBlackTreeNodeIsSentinel(self)) return NO;
 
@@ -304,7 +340,7 @@ BOOL PGRedBlackTreeNodeTraverseSubnodesGreaterThanOrEqualToObject(PGRedBlackTree
             if (stop) return YES;
         }
 
-        block(self->object, &stop);
+        block(self, &stop);
         if (stop) return YES;
 
         return PGRedBlackTreeNodeTraverseSubnodesGreaterThanOrEqualToObject(self->rightChild, object, comparator, block);
@@ -316,14 +352,15 @@ BOOL PGRedBlackTreeNodeTraverseSubnodesGreaterThanOrEqualToObject(PGRedBlackTree
         if (stop) return YES;
     }
     
-    block(self->object, &stop);
+    block(self, &stop);
     if (stop) return YES;
     
     return !PGRedBlackTreeNodeIsSentinel(self->rightChild) ? PGRedBlackTreeNodeTraverseSubnodesWithBlock(self->rightChild, block) : NO;
 }
 
 
-BOOL PGRedBlackTreeNodeTraverseSubnodesGreaterThanObject(PGRedBlackTreeNode *self, id object, NSComparator comparator, void (^block)(id, BOOL *))
+BOOL PGRedBlackTreeNodeTraverseSubnodesGreaterThanObject(PGRedBlackTreeNode *self, id object, NSComparator comparator,
+                                                         void (^block)(PGRedBlackTreeNode *, BOOL *))
 {
     if (PGRedBlackTreeNodeIsSentinel(self)) return NO;
 
@@ -341,8 +378,62 @@ BOOL PGRedBlackTreeNodeTraverseSubnodesGreaterThanObject(PGRedBlackTreeNode *sel
         if (stop) return YES;
     }
     
-    block(self->object, &stop);
+    block(self, &stop);
     if (stop) return YES;
     
     return !PGRedBlackTreeNodeIsSentinel(self->rightChild) ? PGRedBlackTreeNodeTraverseSubnodesWithBlock(self->rightChild, block) : NO;
+}
+
+
+#pragma mark - Test helpers
+
+BOOL PGRedBlackTreeNodeFulfillsProperties(PGRedBlackTreeNode *node, NSUInteger blackNodeCount)
+{
+    // Note: Most of the return statements in this code or on their own line to aid in debugging
+    
+    // If we're a sentinel node, we're at the end of the recursion, so just run these first
+    if (PGRedBlackTreeNodeIsSentinel(node)) {
+        // Property 3
+        if (!node->isRed && !node->object) {
+            return YES;
+        } else {
+            return NO;
+        }
+    }
+    
+    if (!node->object) {
+        return NO;
+    }
+    
+    // Check the left child
+    if (!PGRedBlackTreeNodeFulfillsProperties(node->leftChild, blackNodeCount)) return NO;
+    
+    if (node->isRed) {
+        // Properties 2 and 4
+        if (!node->parent || node->leftChild->isRed || node->leftChild->isRed) {
+            return NO;
+        }
+    }
+    
+    // Property 5
+    if (PGRedBlackTreeNodeIsSentinel(node->leftChild) && PGRedBlackTreeNodeIsSentinel(node->rightChild)) {
+        if (blackNodeCount != PGRedBlackTreeNodeBlackNodeCountInPathFromNodeToRoot(node)) {
+            return NO;
+        }
+    }
+    
+    // Check the right child
+    return PGRedBlackTreeNodeFulfillsProperties(node->rightChild, blackNodeCount);
+}
+
+
+NSUInteger PGRedBlackTreeNodeBlackNodeCountInPathFromNodeToRoot(PGRedBlackTreeNode *node)
+{
+    NSUInteger blackNodeCount = 0;
+    while (node) {
+        if (!node->isRed) ++blackNodeCount;
+        node = node->parent;
+    }
+    
+    return blackNodeCount;
 }

@@ -10,7 +10,15 @@
 		4C21E3CC16C8A71200CDEABB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C21E3CB16C8A71200CDEABB /* Foundation.framework */; };
 		4C21E3CF16C8A71200CDEABB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C21E3CE16C8A71200CDEABB /* main.m */; };
 		4C21E3DB16C8A72400CDEABB /* PGRedBlackTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C21E3DA16C8A72400CDEABB /* PGRedBlackTree.m */; };
+		4C3223E016CE8A740056E578 /* PGRedBlackTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C8C7F8316CBE1FB00342B76 /* PGRedBlackTreeNode.m */; };
+		4C3223E116CE8A770056E578 /* PGRedBlackTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C21E3DA16C8A72400CDEABB /* PGRedBlackTree.m */; };
+		4C3223E516CE920C0056E578 /* PGUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C3223E416CE920C0056E578 /* PGUtilities.m */; };
+		4C3223E616CE92D40056E578 /* PGUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C3223E416CE920C0056E578 /* PGUtilities.m */; };
 		4C8C7F8416CBE1FB00342B76 /* PGRedBlackTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C8C7F8316CBE1FB00342B76 /* PGRedBlackTreeNode.m */; };
+		4C8E1AFD16CD90B60012FCF6 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C8E1AFC16CD90B60012FCF6 /* SenTestingKit.framework */; };
+		4C8E1AFF16CD90B60012FCF6 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C8E1AFE16CD90B60012FCF6 /* Cocoa.framework */; };
+		4C8E1B0916CD90B60012FCF6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4C8E1B0716CD90B60012FCF6 /* InfoPlist.strings */; };
+		4C8E1B0C16CD90B60012FCF6 /* RedBlackTreeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C8E1B0B16CD90B60012FCF6 /* RedBlackTreeTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -32,8 +40,21 @@
 		4C21E3D116C8A71200CDEABB /* RedBlack-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RedBlack-Prefix.pch"; sourceTree = "<group>"; };
 		4C21E3D916C8A72400CDEABB /* PGRedBlackTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGRedBlackTree.h; sourceTree = "<group>"; };
 		4C21E3DA16C8A72400CDEABB /* PGRedBlackTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGRedBlackTree.m; sourceTree = "<group>"; };
+		4C3223E316CE920C0056E578 /* PGUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGUtilities.h; sourceTree = "<group>"; };
+		4C3223E416CE920C0056E578 /* PGUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGUtilities.m; sourceTree = "<group>"; };
 		4C8C7F8216CBE1D400342B76 /* PGRedBlackTreeNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PGRedBlackTreeNode.h; sourceTree = "<group>"; };
 		4C8C7F8316CBE1FB00342B76 /* PGRedBlackTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGRedBlackTreeNode.m; sourceTree = "<group>"; };
+		4C8E1AFB16CD90B60012FCF6 /* RedBlackTreeTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RedBlackTreeTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C8E1AFC16CD90B60012FCF6 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		4C8E1AFE16CD90B60012FCF6 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		4C8E1B0116CD90B60012FCF6 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		4C8E1B0216CD90B60012FCF6 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		4C8E1B0316CD90B60012FCF6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		4C8E1B0616CD90B60012FCF6 /* RedBlackTreeTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RedBlackTreeTests-Info.plist"; sourceTree = "<group>"; };
+		4C8E1B0816CD90B60012FCF6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4C8E1B0A16CD90B60012FCF6 /* RedBlackTreeTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RedBlackTreeTests.h; sourceTree = "<group>"; };
+		4C8E1B0B16CD90B60012FCF6 /* RedBlackTreeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RedBlackTreeTests.m; sourceTree = "<group>"; };
+		4C8E1B0D16CD90B60012FCF6 /* RedBlackTreeTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RedBlackTreeTests-Prefix.pch"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +66,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4C8E1AF716CD90B60012FCF6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4C8E1AFD16CD90B60012FCF6 /* SenTestingKit.framework in Frameworks */,
+				4C8E1AFF16CD90B60012FCF6 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -52,6 +82,8 @@
 			isa = PBXGroup;
 			children = (
 				4C21E3CD16C8A71200CDEABB /* RedBlack */,
+				4C8E1B0416CD90B60012FCF6 /* RedBlackTreeTests */,
+				4C3223E216CE920C0056E578 /* Utilities */,
 				4C21E3CA16C8A71200CDEABB /* Frameworks */,
 				4C21E3C916C8A71200CDEABB /* Products */,
 			);
@@ -61,6 +93,7 @@
 			isa = PBXGroup;
 			children = (
 				4C21E3C816C8A71200CDEABB /* RedBlack */,
+				4C8E1AFB16CD90B60012FCF6 /* RedBlackTreeTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -69,6 +102,9 @@
 			isa = PBXGroup;
 			children = (
 				4C21E3CB16C8A71200CDEABB /* Foundation.framework */,
+				4C8E1AFC16CD90B60012FCF6 /* SenTestingKit.framework */,
+				4C8E1AFE16CD90B60012FCF6 /* Cocoa.framework */,
+				4C8E1B0016CD90B60012FCF6 /* Other Frameworks */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -94,6 +130,46 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		4C3223E216CE920C0056E578 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				4C3223E316CE920C0056E578 /* PGUtilities.h */,
+				4C3223E416CE920C0056E578 /* PGUtilities.m */,
+			);
+			name = Utilities;
+			path = ../Common/Utilities;
+			sourceTree = "<group>";
+		};
+		4C8E1B0016CD90B60012FCF6 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4C8E1B0116CD90B60012FCF6 /* AppKit.framework */,
+				4C8E1B0216CD90B60012FCF6 /* CoreData.framework */,
+				4C8E1B0316CD90B60012FCF6 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		4C8E1B0416CD90B60012FCF6 /* RedBlackTreeTests */ = {
+			isa = PBXGroup;
+			children = (
+				4C8E1B0A16CD90B60012FCF6 /* RedBlackTreeTests.h */,
+				4C8E1B0B16CD90B60012FCF6 /* RedBlackTreeTests.m */,
+				4C8E1B0516CD90B60012FCF6 /* Supporting Files */,
+			);
+			path = RedBlackTreeTests;
+			sourceTree = "<group>";
+		};
+		4C8E1B0516CD90B60012FCF6 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4C8E1B0616CD90B60012FCF6 /* RedBlackTreeTests-Info.plist */,
+				4C8E1B0716CD90B60012FCF6 /* InfoPlist.strings */,
+				4C8E1B0D16CD90B60012FCF6 /* RedBlackTreeTests-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -113,6 +189,24 @@
 			productName = RedBlack;
 			productReference = 4C21E3C816C8A71200CDEABB /* RedBlack */;
 			productType = "com.apple.product-type.tool";
+		};
+		4C8E1AFA16CD90B60012FCF6 /* RedBlackTreeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4C8E1B1016CD90B60012FCF6 /* Build configuration list for PBXNativeTarget "RedBlackTreeTests" */;
+			buildPhases = (
+				4C8E1AF616CD90B60012FCF6 /* Sources */,
+				4C8E1AF716CD90B60012FCF6 /* Frameworks */,
+				4C8E1AF816CD90B60012FCF6 /* Resources */,
+				4C8E1AF916CD90B60012FCF6 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RedBlackTreeTests;
+			productName = RedBlackTreeTests;
+			productReference = 4C8E1AFB16CD90B60012FCF6 /* RedBlackTreeTests.octest */;
+			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
 
@@ -136,9 +230,37 @@
 			projectRoot = "";
 			targets = (
 				4C21E3C716C8A71200CDEABB /* RedBlack */,
+				4C8E1AFA16CD90B60012FCF6 /* RedBlackTreeTests */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4C8E1AF816CD90B60012FCF6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4C8E1B0916CD90B60012FCF6 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		4C8E1AF916CD90B60012FCF6 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		4C21E3C416C8A71200CDEABB /* Sources */ = {
@@ -148,10 +270,33 @@
 				4C21E3CF16C8A71200CDEABB /* main.m in Sources */,
 				4C21E3DB16C8A72400CDEABB /* PGRedBlackTree.m in Sources */,
 				4C8C7F8416CBE1FB00342B76 /* PGRedBlackTreeNode.m in Sources */,
+				4C3223E516CE920C0056E578 /* PGUtilities.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4C8E1AF616CD90B60012FCF6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4C8E1B0C16CD90B60012FCF6 /* RedBlackTreeTests.m in Sources */,
+				4C3223E016CE8A740056E578 /* PGRedBlackTreeNode.m in Sources */,
+				4C3223E116CE8A770056E578 /* PGRedBlackTree.m in Sources */,
+				4C3223E616CE92D40056E578 /* PGUtilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		4C8E1B0716CD90B60012FCF6 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4C8E1B0816CD90B60012FCF6 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		4C21E3D416C8A71200CDEABB /* Debug */ = {
@@ -231,6 +376,34 @@
 			};
 			name = Release;
 		};
+		4C8E1B0E16CD90B60012FCF6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "RedBlackTreeTests/RedBlackTreeTests-Prefix.pch";
+				INFOPLIST_FILE = "RedBlackTreeTests/RedBlackTreeTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		4C8E1B0F16CD90B60012FCF6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "RedBlackTreeTests/RedBlackTreeTests-Prefix.pch";
+				INFOPLIST_FILE = "RedBlackTreeTests/RedBlackTreeTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -248,6 +421,15 @@
 			buildConfigurations = (
 				4C21E3D716C8A71200CDEABB /* Debug */,
 				4C21E3D816C8A71200CDEABB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4C8E1B1016CD90B60012FCF6 /* Build configuration list for PBXNativeTarget "RedBlackTreeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4C8E1B0E16CD90B60012FCF6 /* Debug */,
+				4C8E1B0F16CD90B60012FCF6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
