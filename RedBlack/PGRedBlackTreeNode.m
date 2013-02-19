@@ -387,9 +387,9 @@ BOOL PGRedBlackTreeNodeTraverseSubnodesGreaterThanObject(PGRedBlackTreeNode *sel
 
 #pragma mark - Test helpers
 
-BOOL PGRedBlackTreeNodeFulfillsProperties(PGRedBlackTreeNode *node, NSUInteger blackNodeCount)
+BOOL PGRedBlackTreeNodeFulfillsProperties(PGRedBlackTreeNode *node, NSComparator comparator, NSUInteger blackNodeCount)
 {
-    // Note: Most of the return statements in this code or on their own line to aid in debugging
+    // Note: Most of the return statements in this code are on their own line to aid in debugging
     
     // If we're a sentinel node, we're at the end of the recursion, so just run these first
     if (PGRedBlackTreeNodeIsSentinel(node)) {
@@ -406,24 +406,31 @@ BOOL PGRedBlackTreeNodeFulfillsProperties(PGRedBlackTreeNode *node, NSUInteger b
     }
     
     // Check the left child
-    if (!PGRedBlackTreeNodeFulfillsProperties(node->leftChild, blackNodeCount)) return NO;
+    if (!PGRedBlackTreeNodeFulfillsProperties(node->leftChild, comparator, blackNodeCount)) return NO;
     
-    if (node->isRed) {
-        // Properties 2 and 4
-        if (!node->parent || node->leftChild->isRed || node->leftChild->isRed) {
-            return NO;
-        }
+    // Properties 2 and 4
+    if (node->isRed && (!node->parent || node->leftChild->isRed || node->leftChild->isRed)) {
+        return NO;
     }
     
-    // Property 5
     if (PGRedBlackTreeNodeIsSentinel(node->leftChild) && PGRedBlackTreeNodeIsSentinel(node->rightChild)) {
+        // Property 5
         if (blackNodeCount != PGRedBlackTreeNodeBlackNodeCountInPathFromNodeToRoot(node)) {
+            return NO;
+        }
+    } else {
+        // Basic BST test
+        if (!PGRedBlackTreeNodeIsSentinel(node->leftChild) && comparator(node->leftChild->object, node->object) > NSOrderedSame) {
+            return NO;
+        }
+        
+        if (!PGRedBlackTreeNodeIsSentinel(node->rightChild) && comparator(node->rightChild->object, node->object) < NSOrderedSame) {
             return NO;
         }
     }
     
     // Check the right child
-    return PGRedBlackTreeNodeFulfillsProperties(node->rightChild, blackNodeCount);
+    return PGRedBlackTreeNodeFulfillsProperties(node->rightChild, comparator, blackNodeCount);
 }
 
 

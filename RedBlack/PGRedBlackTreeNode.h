@@ -121,7 +121,7 @@ extern BOOL PGRedBlackTreeNodeTraverseSubnodesGreaterThanObject(PGRedBlackTreeNo
 
 #pragma mark - Test helpers
 
-extern BOOL PGRedBlackTreeNodeFulfillsProperties(PGRedBlackTreeNode *node, NSUInteger blackNodesOnPathToRoot);
+extern BOOL PGRedBlackTreeNodeFulfillsProperties(PGRedBlackTreeNode *node, NSComparator comparator, NSUInteger blackNodesOnPathToRoot);
 extern NSUInteger PGRedBlackTreeNodeBlackNodeCountInPathFromNodeToRoot(PGRedBlackTreeNode *node);
 
 #endif

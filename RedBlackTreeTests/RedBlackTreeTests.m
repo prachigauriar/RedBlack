@@ -11,6 +11,11 @@
 
 static const NSUInteger PGLargeTreeSize = 10000;
 
+@interface PGRedBlackTree (PropertyVerification)
+- (BOOL)fulfillsProperties;
+@end
+
+
 @implementation RedBlackTreeTests
 
 - (void)testInit
@@ -114,8 +119,11 @@ static const NSUInteger PGLargeTreeSize = 10000;
 
 - (void)testAddWithManyObjects
 {
-    // Seed the random number generator with known seed
-    srandom(1234567);
+    // Seed the random number generator and output the seed so we can later reproduce any errors
+    srandomdev();
+    unsigned seed = (unsigned)random();
+    NSLog(@"Using seed %d", seed);
+    srandom(seed);
     
     // Use a custom comparator (reverse order) for these tests
     NSComparator comparator = ^NSComparisonResult(id object1, id object2) { return [object2 compare:object1]; };
@@ -208,8 +216,10 @@ static const NSUInteger PGLargeTreeSize = 10000;
 
 - (void)testRemoveWithManyObjects
 {
-    // Seed the random number generator with a known seed
-    srandom(7654321);
+    srandomdev();
+    unsigned seed = (unsigned)random();
+    NSLog(@"Using seed %d", seed);
+    srandom(seed);
     
     NSComparator comparator = ^NSComparisonResult(id object1, id object2) { return [object2 compare:object1]; };
     PGRedBlackTree *tree = [[PGRedBlackTree alloc] initWithComparator:comparator];

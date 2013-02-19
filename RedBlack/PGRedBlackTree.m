@@ -21,7 +21,7 @@
 //    5. Every simple path from a given node to any of its descendant leaves contains the same number of black nodes.
 
 
-#pragma mark - Tree private interface
+#pragma mark - Private interfaces
 
 @interface PGRedBlackTree ()
 
@@ -40,7 +40,12 @@
 @end
 
 
-#pragma mark - Tree implementation
+@interface PGRedBlackTree (PropertyVerification)
+- (BOOL)fulfillsProperties;
+@end
+
+
+#pragma mark - Implementation
 
 
 @implementation PGRedBlackTree
@@ -246,7 +251,7 @@
     __block PGRedBlackTreeNode *node = NULL;
     
     PGRedBlackTreeNodeTraverseSubnodesEqualToObject(_root, object, _comparator, ^(PGRedBlackTreeNode *candidateNode, BOOL *stop) {
-        if ([object hash] == [candidateNode->object hash] && [object isEqual:candidateNode->object]) {
+        if (object == candidateNode->object || ([object hash] == [candidateNode->object hash] && [object isEqual:candidateNode->object])) {
             node = candidateNode;
             *stop = YES;
         }
@@ -397,6 +402,12 @@
 
 - (void)enumerateObjectsUsingBlock:(void (^)(id, BOOL *))block
 {
+    if (!block) {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                       reason:PGExceptionString(self, _cmd, @"Cannot enumerate using nil block.")
+                                     userInfo:nil];
+    }
+    
     if (!_root) return;
     PGRedBlackTreeNodeTraverseSubnodesWithBlock(_root, ^(PGRedBlackTreeNode *node, BOOL *stop) { block(node->object, stop); });
 }
@@ -404,6 +415,12 @@
 
 - (void)enumerateObjectsLessThanObject:(id)object usingBlock:(void (^)(id, BOOL *))block
 {
+    if (!block) {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                       reason:PGExceptionString(self, _cmd, @"Cannot enumerate using nil block.")
+                                     userInfo:nil];
+    }
+
     if (!_root) return;
     PGRedBlackTreeNodeTraverseSubnodesWithBlock(_root, ^(PGRedBlackTreeNode *node, BOOL *stop) {
         NSComparisonResult result = _comparator(node->object, object);
@@ -419,6 +436,12 @@
 
 - (void)enumerateObjectsLessThanOrEqualToObject:(id)object usingBlock:(void (^)(id, BOOL *))block
 {
+    if (!block) {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                       reason:PGExceptionString(self, _cmd, @"Cannot enumerate using nil block.")
+                                     userInfo:nil];
+    }
+
     if (!_root) return;
     PGRedBlackTreeNodeTraverseSubnodesWithBlock(_root, ^(PGRedBlackTreeNode *node, BOOL *stop) {
         if (_comparator(node->object, object) > NSOrderedSame) {
@@ -433,6 +456,12 @@
 
 - (void)enumerateObjectsEqualToObject:(id)object usingBlock:(void (^)(id, BOOL *))block
 {
+    if (!block) {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                       reason:PGExceptionString(self, _cmd, @"Cannot enumerate using nil block.")
+                                     userInfo:nil];
+    }
+
     if (!_root) return;
     PGRedBlackTreeNodeTraverseSubnodesEqualToObject(_root, object, _comparator, ^(PGRedBlackTreeNode *n, BOOL *s) { block(n->object, s); });
 }
@@ -440,6 +469,12 @@
 
 - (void)enumerateObjectsGreaterThanOrEqualToObject:(id)object usingBlock:(void (^)(id, BOOL *))block
 {
+    if (!block) {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                       reason:PGExceptionString(self, _cmd, @"Cannot enumerate using nil block.")
+                                     userInfo:nil];
+    }
+
     if (!_root) return;
     PGRedBlackTreeNodeTraverseSubnodesGreaterThanOrEqualToObject(_root, object, _comparator, ^(PGRedBlackTreeNode *n, BOOL *s) { block(n->object, s); });
 }
@@ -447,6 +482,12 @@
 
 - (void)enumerateObjectsGreaterThanObject:(id)object usingBlock:(void (^)(id, BOOL *))block
 {
+    if (!block) {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                       reason:PGExceptionString(self, _cmd, @"Cannot enumerate using nil block.")
+                                     userInfo:nil];
+    }
+
     if (!_root) return;
     PGRedBlackTreeNodeTraverseSubnodesGreaterThanObject(_root, object, _comparator, ^(PGRedBlackTreeNode *n, BOOL *s) { block(n->object, s); });
 }
@@ -456,6 +497,12 @@
 
 - (NSArray *)objectsPassingTest:(BOOL (^)(id, BOOL *))predicate
 {
+    if (!predicate) {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                       reason:PGExceptionString(self, _cmd, @"Cannot test using nil predicate.")
+                                     userInfo:nil];
+    }
+
     __block NSMutableArray *objects = [NSMutableArray array];
     
     [self enumerateObjectsUsingBlock:^(id object, BOOL *stop) {
@@ -574,7 +621,7 @@
         }
     }
     
-    return PGRedBlackTreeNodeFulfillsProperties(_root, PGRedBlackTreeNodeBlackNodeCountInPathFromNodeToRoot(node));
+    return PGRedBlackTreeNodeFulfillsProperties(_root, _comparator, PGRedBlackTreeNodeBlackNodeCountInPathFromNodeToRoot(node));
 }
 
 @end
