@@ -12,8 +12,8 @@
 		4C21E3DB16C8A72400CDEABB /* PGRedBlackTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C21E3DA16C8A72400CDEABB /* PGRedBlackTree.m */; };
 		4C3223E016CE8A740056E578 /* PGRedBlackTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C8C7F8316CBE1FB00342B76 /* PGRedBlackTreeNode.m */; };
 		4C3223E116CE8A770056E578 /* PGRedBlackTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C21E3DA16C8A72400CDEABB /* PGRedBlackTree.m */; };
-		4C3223E516CE920C0056E578 /* PGUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C3223E416CE920C0056E578 /* PGUtilities.m */; };
-		4C3223E616CE92D40056E578 /* PGUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C3223E416CE920C0056E578 /* PGUtilities.m */; };
+		4C737553173FEDC900545D83 /* PGUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C737552173FEDC900545D83 /* PGUtilities.m */; };
+		4C737554173FEDC900545D83 /* PGUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C737552173FEDC900545D83 /* PGUtilities.m */; };
 		4C8C7F8416CBE1FB00342B76 /* PGRedBlackTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C8C7F8316CBE1FB00342B76 /* PGRedBlackTreeNode.m */; };
 		4C8E1AFD16CD90B60012FCF6 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C8E1AFC16CD90B60012FCF6 /* SenTestingKit.framework */; };
 		4C8E1AFF16CD90B60012FCF6 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C8E1AFE16CD90B60012FCF6 /* Cocoa.framework */; };
@@ -40,8 +40,8 @@
 		4C21E3D116C8A71200CDEABB /* RedBlack-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RedBlack-Prefix.pch"; sourceTree = "<group>"; };
 		4C21E3D916C8A72400CDEABB /* PGRedBlackTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGRedBlackTree.h; sourceTree = "<group>"; };
 		4C21E3DA16C8A72400CDEABB /* PGRedBlackTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGRedBlackTree.m; sourceTree = "<group>"; };
-		4C3223E316CE920C0056E578 /* PGUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGUtilities.h; sourceTree = "<group>"; };
-		4C3223E416CE920C0056E578 /* PGUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGUtilities.m; sourceTree = "<group>"; };
+		4C737551173FEDC900545D83 /* PGUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PGUtilities.h; path = ../../RedBlack/RedBlack/PGUtilities.h; sourceTree = "<group>"; };
+		4C737552173FEDC900545D83 /* PGUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PGUtilities.m; path = ../../RedBlack/RedBlack/PGUtilities.m; sourceTree = "<group>"; };
 		4C8C7F8216CBE1D400342B76 /* PGRedBlackTreeNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PGRedBlackTreeNode.h; sourceTree = "<group>"; };
 		4C8C7F8316CBE1FB00342B76 /* PGRedBlackTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGRedBlackTreeNode.m; sourceTree = "<group>"; };
 		4C8E1AFB16CD90B60012FCF6 /* RedBlackTreeTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RedBlackTreeTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -133,8 +133,8 @@
 		4C3223E216CE920C0056E578 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				4C3223E316CE920C0056E578 /* PGUtilities.h */,
-				4C3223E416CE920C0056E578 /* PGUtilities.m */,
+				4C737551173FEDC900545D83 /* PGUtilities.h */,
+				4C737552173FEDC900545D83 /* PGUtilities.m */,
 			);
 			name = Utilities;
 			path = ../Common/Utilities;
@@ -270,7 +270,7 @@
 				4C21E3CF16C8A71200CDEABB /* main.m in Sources */,
 				4C21E3DB16C8A72400CDEABB /* PGRedBlackTree.m in Sources */,
 				4C8C7F8416CBE1FB00342B76 /* PGRedBlackTreeNode.m in Sources */,
-				4C3223E516CE920C0056E578 /* PGUtilities.m in Sources */,
+				4C737553173FEDC900545D83 /* PGUtilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,7 +281,7 @@
 				4C8E1B0C16CD90B60012FCF6 /* RedBlackTreeTests.m in Sources */,
 				4C3223E016CE8A740056E578 /* PGRedBlackTreeNode.m in Sources */,
 				4C3223E116CE8A770056E578 /* PGRedBlackTree.m in Sources */,
-				4C3223E616CE92D40056E578 /* PGUtilities.m in Sources */,
+				4C737554173FEDC900545D83 /* PGUtilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
