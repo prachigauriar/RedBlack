@@ -24,10 +24,10 @@
 //  THE SOFTWARE.
 //
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 #import "PGRedBlackTree.h"
 
-@interface RedBlackTreeTests : SenTestCase
+@interface RedBlackTreeTests : XCTestCase
 
 - (void)testInit;
 

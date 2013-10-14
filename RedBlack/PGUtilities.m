@@ -36,7 +36,7 @@ NSArray *PGCommandLineArgumentsAsStrings(int argc, const char *argv[])
 {
     NSMutableArray *args = [NSMutableArray arrayWithCapacity:argc];
     for (NSUInteger i = 0; i < argc; ++i) {
-        [args addObject:[NSString stringWithUTF8String:argv[i]]];
+        [args addObject:@(argv[i])];
     }
     
     return args;

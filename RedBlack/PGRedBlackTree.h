@@ -90,9 +90,9 @@
  @abstract Adds a copy of the specified object to the tree.
  @discussion Because a red-black tree is a type of binary search tree, it is very important that its objects not
      mutate after they have been added to the tree. If an object's mutation affected its comparison value the object
-     would no longer be located where it should be in the . To prevent this, the implementation of -addObject: adds 
+     would no longer be located where it should be in the tree. To prevent this, the implementation of -addObject: adds
      a copy of the object to the tree. If your object is immutable, it is recommended that your object's implementation
-     of -copyWithZone: merely increments the object's retain count.
+     of -copyWithZone: merely increment the object's retain count.
  @param object The object whose copy will be added. May not be nil.
  @throws NSInvalidArgumentException if object is nil
  */
